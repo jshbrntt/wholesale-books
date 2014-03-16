@@ -98,3 +98,28 @@ CREATE TABLE ArchivedOrderline
 	FOREIGN KEY (BookID) REFERENCES Book(BookID) ON DELETE CASCADE,
 	PRIMARY KEY (ShopOrderID, BookID)
 );
+
+
+-- Function for generating Publisher Report Data:
+CREATE OR REPLACE FUNCTION pub_report (pub_name VARCHAR(50))
+RETURNS TABLE (
+	orderdate DATE,
+	title VARCHAR(50),
+	totalquantity INTEGER,
+	totalsellingvalue DECIMAL(10,2)
+)
+AS $$
+BEGIN
+	RETURN QUERY
+	SELECT	shoporder.orderdate,
+		book.title,
+		orderline.quantity,
+		orderline.unitsellingprice
+	FROM (((SELECT	publisherid FROM publisher WHERE name = $1) AS pub_id
+		NATURAL JOIN book)
+		NATURAL JOIN shop
+		NATURAL JOIN shoporder
+		NATURAL JOIN orderline)
+	ORDER BY shoporder.orderdate DESC;
+END;
+$$ LANGUAGE plpgsql;
