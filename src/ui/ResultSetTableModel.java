@@ -33,6 +33,7 @@ public class ResultSetTableModel extends AbstractTableModel {
 			}
 
 			// Parse result set to column lists...
+			rs.beforeFirst();
 			while (rs.next()) {
 				for (int i = 0; i < columnNames.size(); i++) {
 					String columnName = columnNames.get(i);

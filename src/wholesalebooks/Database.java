@@ -36,7 +36,7 @@ public class Database {
 			try {
 				
 				connection = DriverManager.getConnection(url, userName, password);
-				statement = connection.createStatement();
+				statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 				System.out.println("Connection Successful!");
 				return true;
 				

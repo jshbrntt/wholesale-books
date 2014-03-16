@@ -115,7 +115,8 @@ BEGIN
 		book.title,
 		orderline.quantity,
 		orderline.unitsellingprice
-	FROM (((SELECT	publisherid FROM publisher WHERE name = $1) AS pub_id
+	-- Find publisher using 'pub_name' regardless of case.
+	FROM (((SELECT	publisherid FROM publisher WHERE UPPER(name) = UPPER($1)) AS pub_id
 		NATURAL JOIN book)
 		NATURAL JOIN shop
 		NATURAL JOIN shoporder

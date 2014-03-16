@@ -3,6 +3,7 @@ package wholesalebooks;
 import actions.CategoryReport;
 import actions.CreateCategory;
 import actions.DeleteCategory;
+import actions.PublisherReport;
 import actions.SetupTables;
 import java.util.Arrays;
 import menus.Menu;
@@ -14,12 +15,14 @@ public class WholesaleBooks {
 	public final static String insertDataSQL = "sql/insert-data.sql";
 
 	public static Menu menu = new Menu(
+			
 			"Wholesale Books",
 			Arrays.asList(
 					new MenuItem("Setup Tables", new SetupTables()),
 					new MenuItem("Create Category", new CreateCategory()),
 					new MenuItem("Delete Category", new DeleteCategory()),
-					new MenuItem("Category Report", new CategoryReport())
+					new MenuItem("Category Report", new CategoryReport()),
+					new MenuItem("Publisher Report", new PublisherReport())
 			)
 	);
 

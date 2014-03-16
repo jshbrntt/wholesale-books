@@ -82,7 +82,7 @@ public class Menu {
 				
 				while (true) {
 					
-					System.out.printf("%s:\t\n", label);
+					System.out.printf("%s:\n", label);
 					try {
 						
 						scanner = new Scanner(System.in);
@@ -121,11 +121,10 @@ public class Menu {
 					} catch (InputMismatchException ex) {
 						String message = ex.getMessage();
 						if (message != null) {
-							System.out.printf("Invalid Input:\t%s\n\n", message);
+							System.out.printf("Invalid Input:\n%s\n\n", message);
 						} else {
 							System.out.println("Invalid Input\n");
 						}
-						scanner.nextLine();
 					}
 				}
 			}
