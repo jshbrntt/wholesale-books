@@ -1,5 +1,6 @@
 package wholesalebooks;
 
+import actions.BookOrderHistory;
 import actions.CategoryReport;
 import actions.CreateCategory;
 import actions.DeleteCategory;
@@ -22,7 +23,8 @@ public class WholesaleBooks {
 					new MenuItem("Create Category", new CreateCategory()),
 					new MenuItem("Delete Category", new DeleteCategory()),
 					new MenuItem("Category Report", new CategoryReport()),
-					new MenuItem("Publisher Report", new PublisherReport())
+					new MenuItem("Publisher Report", new PublisherReport()),
+					new MenuItem("Book Order History", new BookOrderHistory())
 			)
 	);
 

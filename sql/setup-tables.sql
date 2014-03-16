@@ -111,16 +111,44 @@ RETURNS TABLE (
 AS $$
 BEGIN
 	RETURN QUERY
-	SELECT	shoporder.orderdate,
+	SELECT
+		shoporder.orderdate,
 		book.title,
 		orderline.quantity,
 		orderline.unitsellingprice
 	-- Find publisher using 'pub_name' regardless of case.
-	FROM (((SELECT	publisherid FROM publisher WHERE UPPER(name) = UPPER($1)) AS pub_id
+	FROM
+		(((SELECT publisherid FROM publisher WHERE UPPER(name) = UPPER($1)) AS pub_id
 		NATURAL JOIN book)
 		NATURAL JOIN shop
 		NATURAL JOIN shoporder
 		NATURAL JOIN orderline)
-	ORDER BY shoporder.orderdate DESC;
+	ORDER BY
+		shoporder.orderdate DESC;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function for generating Book Order History:
+CREATE OR REPLACE FUNCTION book_hist (book_id INTEGER)
+RETURNS TABLE (
+	shopname VARCHAR(50),
+	orderdate DATE,
+	quantity INTEGER,
+	unitsellingprice DECIMAL(10,2)
+)
+AS $$
+BEGIN
+	RETURN QUERY
+SELECT
+	shop.name,
+	shoporder.orderdate,
+	orderline.quantity,
+	orderline.unitsellingprice
+FROM
+	book
+	NATURAL JOIN orderline
+	NATURAL JOIN shoporder
+	NATURAL JOIN shop
+WHERE book.bookid = $1;
 END;
 $$ LANGUAGE plpgsql;
