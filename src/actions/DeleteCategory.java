@@ -55,7 +55,7 @@ public class DeleteCategory implements Action {
 				return Database.execute(sql);
 
 			} else {
-				System.out.printf("No category with that '%s'.\n", Category.ID);
+				System.out.printf("No category with that '%s' exists.\n", Category.ID);
 				return false;
 			}
 
