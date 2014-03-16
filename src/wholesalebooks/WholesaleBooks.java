@@ -5,6 +5,7 @@ import actions.CategoryReport;
 import actions.CreateCategory;
 import actions.DeleteCategory;
 import actions.PublisherReport;
+import actions.SalesPerfomanceReport;
 import actions.SetupTables;
 import java.util.Arrays;
 import menus.Menu;
@@ -24,7 +25,8 @@ public class WholesaleBooks {
 					new MenuItem("Delete Category", new DeleteCategory()),
 					new MenuItem("Category Report", new CategoryReport()),
 					new MenuItem("Publisher Report", new PublisherReport()),
-					new MenuItem("Book Order History", new BookOrderHistory())
+					new MenuItem("Book Order History", new BookOrderHistory()),
+					new MenuItem("Sales Perfomance Report", new SalesPerfomanceReport())
 			)
 	);
 

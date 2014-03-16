@@ -139,16 +139,61 @@ RETURNS TABLE (
 AS $$
 BEGIN
 	RETURN QUERY
-SELECT
-	shop.name,
-	shoporder.orderdate,
-	orderline.quantity,
-	orderline.unitsellingprice
-FROM
-	book
-	NATURAL JOIN orderline
-	NATURAL JOIN shoporder
-	NATURAL JOIN shop
+	SELECT
+		shop.name,
+		shoporder.orderdate,
+		orderline.quantity,
+		orderline.unitsellingprice
+	FROM
+		book
+		NATURAL JOIN orderline
+		NATURAL JOIN shoporder
+		NATURAL JOIN shop
 WHERE book.bookid = $1;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function for generating Book Order History Summary Line:
+CREATE OR REPLACE FUNCTION book_hist_summary (book_id INTEGER)
+RETURNS TABLE (
+	copiesordered BIGINT,
+	totalsellingvalue DECIMAL(10,2)
+)
+AS $$
+BEGIN
+	RETURN QUERY
+	SELECT
+		SUM(orderline.quantity),
+		SUM(orderline.unitsellingprice)
+	FROM
+		book
+		NATURAL JOIN orderline
+	WHERE book.bookid = $1
+	GROUP BY book.bookid;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function for generating Sales Perfomance Report Data:
+CREATE OR REPLACE FUNCTION sales_perm_report (startdate DATE, enddate DATE)
+RETURNS TABLE (
+	name VARCHAR(50),
+	orders BIGINT,
+	value DECIMAL(10,2)
+)
+AS $$
+BEGIN
+	RETURN QUERY
+	SELECT
+		salesrep.name,
+		COUNT(shoporder.salesrepid),
+		SUM(unitsellingprice) AS total
+	FROM (
+		salesrep
+		NATURAL JOIN shoporder
+		NATURAL JOIN orderline
+	)
+	WHERE orderdate BETWEEN $1 AND $2
+	GROUP BY salesrep.name
+	ORDER BY total DESC;
 END;
 $$ LANGUAGE plpgsql;

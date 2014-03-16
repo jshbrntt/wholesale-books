@@ -3,6 +3,9 @@ package menus;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -111,6 +114,23 @@ public class Menu {
 								}
 
 								values.put(label, varchar);
+
+								break;
+								
+							case Types.DATE:
+
+								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+								String input =  scanner.nextLine();
+								dateFormat.setLenient(false);
+								
+								// Parsing:
+								
+								try {
+									dateFormat.parse(input);
+									values.put(label, input);
+								} catch (ParseException ex) {
+									System.out.println("Invalid date, must be a real date and in the format must be 'yyyy-MM-dd'.");
+								}
 
 								break;
 						}

@@ -39,10 +39,28 @@ public class BookOrderHistory implements Action {
 				ResultSet report = Database.executeQuery(sql);
 				if (report.next()) {
 					Report.showResultSet(String.format("Book Order History Report: %s", title), report);
+				} else {
+					System.out.println("Book does not exist.");
+					return false;
+				}
+				
+				sql = String.format(
+						"SELECT * FROM book_hist_summary('%d');",
+						bookid
+				);
+				ResultSet summary = Database.executeQuery(sql);
+				if (summary.next()) {
+					System.out.printf(
+							"\nSummary:\n" +
+							"Title: %s\n" +
+							"Copies Ordered: %s\n" +
+							"Total Selling Value: %s\n\n",
+							title, summary.getString(1), summary.getString(2)
+					);
 					return true;
 				} else {
 					System.out.println("Book does not exist.");
-				}
+				}		
 			}
 
 		} catch (SQLException ex) {
