@@ -4,6 +4,7 @@ import actions.BookOrderHistory;
 import actions.CategoryReport;
 import actions.CreateCategory;
 import actions.DeleteCategory;
+import actions.DiscountCategory;
 import actions.PublisherReport;
 import actions.SalesPerfomanceReport;
 import actions.SetupTables;
@@ -26,7 +27,8 @@ public class WholesaleBooks {
 					new MenuItem("Category Report", new CategoryReport()),
 					new MenuItem("Publisher Report", new PublisherReport()),
 					new MenuItem("Book Order History", new BookOrderHistory()),
-					new MenuItem("Sales Perfomance Report", new SalesPerfomanceReport())
+					new MenuItem("Sales Perfomance Report", new SalesPerfomanceReport()),
+					new MenuItem("Discount Category", new DiscountCategory())
 			)
 	);
 

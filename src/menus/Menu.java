@@ -75,7 +75,7 @@ public class Menu {
 				throw new IndexOutOfBoundsException("Illegal end index!");
 			}
 			
-			Scanner scanner = new Scanner(System.in);
+			Scanner scanner;
 			
 			for (int i = start; i <= end; i++) {
 				
@@ -158,4 +158,5 @@ public class Menu {
 		return values;
 
 	}
+	
 }

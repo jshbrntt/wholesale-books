@@ -197,3 +197,30 @@ BEGIN
 	ORDER BY total DESC;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Function for discounting Books in a given Category:
+CREATE OR REPLACE FUNCTION discount_category (id INTEGER, discount DECIMAL(5,2))
+RETURNS TABLE (
+	bookid INTEGER,
+	booktitle VARCHAR(50),
+	bookprice DECIMAL(10,2)
+)
+AS $$
+BEGIN
+	
+	UPDATE	book
+	SET	price = ROUND(book.price * ((100 - $2) / 100), 2)
+	WHERE	book.categoryid = $1;
+
+	RETURN	QUERY
+
+	SELECT	book.bookid,
+		book.title,
+		book.price
+	FROM	book
+	WHERE	book.categoryid = $1;
+
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM discount_category(1, 10.00);
