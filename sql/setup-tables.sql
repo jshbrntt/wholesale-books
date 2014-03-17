@@ -101,7 +101,8 @@ CREATE TABLE ArchivedOrderline
 
 
 -- Function for generating Publisher Report Data:
-CREATE OR REPLACE FUNCTION pub_report (pub_name VARCHAR(50))
+DROP FUNCTION IF EXISTS pub_report (pub_name VARCHAR(50)) CASCADE;
+CREATE FUNCTION pub_report (pub_name VARCHAR(50))
 RETURNS TABLE (
 	orderdate DATE,
 	title VARCHAR(50),
@@ -116,7 +117,7 @@ BEGIN
 		book.title,
 		orderline.quantity,
 		orderline.unitsellingprice
-	-- Find publisher using 'pub_name' regardless of case.
+	-- Find 'publisherid' using 'pub_name' regardless of case.
 	FROM
 		(((SELECT publisherid FROM publisher WHERE UPPER(name) = UPPER($1)) AS pub_id
 		NATURAL JOIN book)
@@ -129,7 +130,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function for generating Book Order History:
-CREATE OR REPLACE FUNCTION book_hist (book_id INTEGER)
+DROP FUNCTION IF EXISTS book_hist (book_id INTEGER) CASCADE;
+CREATE FUNCTION book_hist (book_id INTEGER)
 RETURNS TABLE (
 	shopname VARCHAR(50),
 	orderdate DATE,
@@ -154,7 +156,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function for generating Book Order History Summary Line:
-CREATE OR REPLACE FUNCTION book_hist_summary (book_id INTEGER)
+DROP FUNCTION IF EXISTS book_hist_summary (book_id INTEGER) CASCADE;
+CREATE FUNCTION book_hist_summary (book_id INTEGER)
 RETURNS TABLE (
 	copiesordered BIGINT,
 	totalsellingvalue DECIMAL(10,2)
@@ -174,7 +177,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function for generating Sales Perfomance Report Data:
-CREATE OR REPLACE FUNCTION sales_perm_report (startdate DATE, enddate DATE)
+DROP FUNCTION IF EXISTS sales_perm_report (startdate DATE, enddate DATE) CASCADE;
+CREATE FUNCTION sales_perm_report (startdate DATE, enddate DATE)
 RETURNS TABLE (
 	name VARCHAR(50),
 	orders BIGINT,
@@ -199,11 +203,12 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function for discounting Books in a given Category:
-CREATE OR REPLACE FUNCTION discount_category (id INTEGER, discount DECIMAL(5,2))
+DROP FUNCTION IF EXISTS discount_category (id INTEGER, discount DECIMAL(5,2)) CASCADE;
+CREATE FUNCTION discount_category (id INTEGER, discount DECIMAL(5,2))
 RETURNS TABLE (
-	bookid INTEGER,
-	booktitle VARCHAR(50),
-	bookprice DECIMAL(10,2)
+	id INTEGER,
+	title VARCHAR(50),
+	newprice DECIMAL(10,2)
 )
 AS $$
 BEGIN
@@ -223,4 +228,40 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT * FROM discount_category(1, 10.00);
+-- Function for end of year procedure:
+DROP FUNCTION IF EXISTS end_of_year () CASCADE;
+CREATE FUNCTION end_of_year ()
+RETURNS TABLE (
+	name VARCHAR(50),
+	totalsales DECIMAL(10,2),
+	bonus DECIMAL(10,2)
+)
+AS $$
+BEGIN
+	-- Archive Orderline Table
+	INSERT INTO archivedorderline
+	SELECT * FROM orderline;
+	DELETE FROM orderline;
+	
+	-- Archive ShopOrder Table
+	INSERT INTO archivedshoporder
+	SELECT * FROM shoporder;
+	DELETE FROM shoporder;
+	
+	SELECT
+		name,
+		SUM(orderline.unitsellingprice * orderline.quantity),
+		SUM(orderline.unitsellingprice * orderline.quantity) *
+		(CASE WHEN SUM(orderline.unitsellingprice * orderline.quantity) BETWEEN 0 AND 1000 THEN 0
+		WHEN SUM(orderline.unitsellingprice * orderline.quantity) BETWEEN 1000 AND 5000 THEN 0.1
+		ELSE 0.3
+		END)
+	FROM
+		salesrep NATURAL JOIN
+		shoporder NATURAL JOIN
+		orderline
+	GROUP BY
+		salesrep.name;
+	
+END;
+$$ LANGUAGE plpgsql;
