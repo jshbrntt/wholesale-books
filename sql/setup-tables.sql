@@ -1,15 +1,5 @@
-
 -- Prevent conflicts with existing tables in the database.
 DROP TABLE IF EXISTS Category CASCADE;
-DROP TABLE IF EXISTS SalesRep CASCADE;
-DROP TABLE IF EXISTS Shop CASCADE;
-DROP TABLE IF EXISTS Publisher CASCADE;
-DROP TABLE IF EXISTS Book CASCADE;
-DROP TABLE IF EXISTS ShopOrder CASCADE;
-DROP TABLE IF EXISTS Orderline CASCADE;
-DROP TABLE IF EXISTS ArchivedShopOrder CASCADE;
-DROP TABLE IF EXISTS ArchivedOrderline CASCADE;
-
 CREATE TABLE Category
 (
 	-- Ensure ID is NOT NULL and UNIQUE using the PRIMARY KEY constraint.
@@ -24,21 +14,29 @@ CREATE TABLE Category
 	CONSTRAINT chk_CategoryType CHECK (UPPER(CategoryType) IN ('FICTION', 'NON-FICTION'))
 
 );
+
+DROP TABLE IF EXISTS SalesRep CASCADE;
 CREATE TABLE SalesRep 
 (
 	SalesRepID INTEGER PRIMARY KEY,
 	Name VARCHAR(50)
 );
+
+DROP TABLE IF EXISTS Shop CASCADE;
 CREATE TABLE Shop 
 (
 	ShopID INTEGER PRIMARY KEY,
 	Name VARCHAR(50)
 );
+
+DROP TABLE IF EXISTS Publisher CASCADE;
 CREATE TABLE Publisher 
 (
 	PublisherID INTEGER PRIMARY KEY,
 	Name VARCHAR(50)
 );
+
+DROP TABLE IF EXISTS Book CASCADE;
 CREATE TABLE Book 
 (
 	BookID INTEGER PRIMARY KEY,
@@ -51,6 +49,8 @@ CREATE TABLE Book
 	FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID) ON DELETE CASCADE,
 	FOREIGN KEY (PublisherID) REFERENCES Publisher(PublisherID) ON DELETE CASCADE
 );
+
+DROP TABLE IF EXISTS ShopOrder CASCADE;
 CREATE TABLE ShopOrder
 (
 	ShopOrderID INTEGER PRIMARY KEY,
@@ -62,6 +62,23 @@ CREATE TABLE ShopOrder
 	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID) ON DELETE CASCADE,
 	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID) ON DELETE CASCADE
 );
+
+-- Creating duplicate archive tables for both ShopOrder and Orderline.
+-- These are required for the "end of year" procedure.
+DROP TABLE IF EXISTS ArchivedShopOrder CASCADE;
+CREATE TABLE ArchivedShopOrder
+(
+	ShopOrderID INTEGER PRIMARY KEY,
+	OrderDate DATE,
+	ShopID INTEGER,
+	SalesRepID INTEGER,
+
+	-- Referencing foreign keys in the Shop and SalesRep tables.
+	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID) ON DELETE CASCADE,
+	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS Orderline CASCADE;
 CREATE TABLE Orderline
 (
 	ShopOrderID INTEGER,
@@ -70,35 +87,28 @@ CREATE TABLE Orderline
 	UnitSellingPrice DECIMAL (10,2),
 
 	-- Referencing foreign keys in the ShopOrder and Book tables.
-	FOREIGN KEY (ShopOrderID) REFERENCES ShopOrder(ShopOrderID) ON DELETE CASCADE,
-	FOREIGN KEY (BookID) REFERENCES Book(BookID) ON DELETE CASCADE,
+	FOREIGN KEY (ShopOrderID) REFERENCES ShopOrder(ShopOrderID),
+	FOREIGN KEY (BookID) REFERENCES Book(BookID),
 
 	-- Creating a composite primary key using the two foreign keys.
 	PRIMARY KEY (ShopOrderID, BookID)
 );
 
--- Creating duplicate archive tables for both ShopOrder and Orderline.
--- These are required for the "end of year" procedure.
-CREATE TABLE ArchivedShopOrder
-(
-	ShopOrderID INTEGER PRIMARY KEY,
-	OrderDate DATE,
-	ShopID INTEGER,
-	SalesRepID INTEGER,
-	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID) ON DELETE CASCADE,
-	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID) ON DELETE CASCADE
-);
+DROP TABLE IF EXISTS ArchivedOrderline CASCADE;
 CREATE TABLE ArchivedOrderline
 (
 	ShopOrderID INTEGER,
 	BookID INTEGER,
 	Quantity INTEGER,
 	UnitSellingPrice DECIMAL (10,2),
-	FOREIGN KEY (ShopOrderID) REFERENCES ShopOrder(ShopOrderID) ON DELETE CASCADE,
-	FOREIGN KEY (BookID) REFERENCES Book(BookID) ON DELETE CASCADE,
+
+	-- Referencing foreign keys in the ShopOrder and Book tables.
+	FOREIGN KEY (ShopOrderID) REFERENCES ShopOrder(ShopOrderID),
+	FOREIGN KEY (BookID) REFERENCES Book(BookID),
+
+	-- Creating a composite primary key using the two foreign keys.
 	PRIMARY KEY (ShopOrderID, BookID)
 );
-
 
 -- Function for generating Publisher Report Data:
 DROP FUNCTION IF EXISTS pub_report (pub_name VARCHAR(50)) CASCADE;
@@ -232,34 +242,38 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION IF EXISTS end_of_year () CASCADE;
 CREATE FUNCTION end_of_year ()
 RETURNS TABLE (
-	name VARCHAR(50),
+	repname VARCHAR(50),
 	totalsales DECIMAL(10,2),
 	bonus DECIMAL(10,2)
 )
 AS $$
 BEGIN
+
 	-- Archive Orderline Table
-	INSERT INTO archivedorderline
-	SELECT * FROM orderline;
-	DELETE FROM orderline;
+	INSERT INTO archivedorderline SELECT * FROM orderline;
 	
 	-- Archive ShopOrder Table
-	INSERT INTO archivedshoporder
-	SELECT * FROM shoporder;
+	INSERT INTO archivedshoporder SELECT * FROM shoporder;
+
+	-- Delete data from old tables.
+	DELETE FROM orderline;
 	DELETE FROM shoporder;
+
+	RETURN	QUERY
 	
+	-- Return Bonus Report
 	SELECT
-		name,
-		SUM(orderline.unitsellingprice * orderline.quantity),
-		SUM(orderline.unitsellingprice * orderline.quantity) *
-		(CASE WHEN SUM(orderline.unitsellingprice * orderline.quantity) BETWEEN 0 AND 1000 THEN 0
-		WHEN SUM(orderline.unitsellingprice * orderline.quantity) BETWEEN 1000 AND 5000 THEN 0.1
-		ELSE 0.3
-		END)
+		salesrep.name,
+		SUM(archivedorderline.unitsellingprice * archivedorderline.quantity),
+		SUM(archivedorderline.unitsellingprice * archivedorderline.quantity) *
+		CASE WHEN SUM(archivedorderline.unitsellingprice * archivedorderline.quantity) BETWEEN 0 AND 1000 THEN 0
+		WHEN SUM(archivedorderline.unitsellingprice * archivedorderline.quantity) BETWEEN 1000 AND 5000 THEN 0.01
+		ELSE 0.03
+		END
 	FROM
 		salesrep NATURAL JOIN
-		shoporder NATURAL JOIN
-		orderline
+		archivedshoporder NATURAL JOIN
+		archivedorderline
 	GROUP BY
 		salesrep.name;
 	
