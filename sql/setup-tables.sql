@@ -59,8 +59,8 @@ CREATE TABLE ShopOrder
 	SalesRepID INTEGER,
 
 	-- Referencing foreign keys in the Shop and SalesRep tables.
-	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID) ON DELETE CASCADE,
-	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID) ON DELETE CASCADE
+	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID),
+	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID)
 );
 
 -- Creating duplicate archive tables for both ShopOrder and Orderline.
@@ -74,8 +74,8 @@ CREATE TABLE ArchivedShopOrder
 	SalesRepID INTEGER,
 
 	-- Referencing foreign keys in the Shop and SalesRep tables.
-	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID) ON DELETE CASCADE,
-	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID) ON DELETE CASCADE
+	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID),
+	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID)
 );
 
 DROP TABLE IF EXISTS Orderline CASCADE;
@@ -103,7 +103,7 @@ CREATE TABLE ArchivedOrderline
 	UnitSellingPrice DECIMAL (10,2),
 
 	-- Referencing foreign keys in the ShopOrder and Book tables.
-	FOREIGN KEY (ShopOrderID) REFERENCES ShopOrder(ShopOrderID),
+	FOREIGN KEY (ShopOrderID) REFERENCES ArchivedShopOrder(ShopOrderID),
 	FOREIGN KEY (BookID) REFERENCES Book(BookID),
 
 	-- Creating a composite primary key using the two foreign keys.
@@ -249,13 +249,12 @@ RETURNS TABLE (
 AS $$
 BEGIN
 
-	-- Archive Orderline Table
-	INSERT INTO archivedorderline SELECT * FROM orderline;
-	
-	-- Archive ShopOrder Table
-	INSERT INTO archivedshoporder SELECT * FROM shoporder;
 
-	-- Delete data from old tables.
+	-- Archive Data
+	INSERT INTO archivedshoporder SELECT * FROM shoporder;
+	INSERT INTO archivedorderline SELECT * FROM orderline;
+
+	-- Delete Data
 	DELETE FROM orderline;
 	DELETE FROM shoporder;
 
