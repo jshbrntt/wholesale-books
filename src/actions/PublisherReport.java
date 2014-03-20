@@ -11,6 +11,8 @@ import wholesalebooks.Database;
 
 public class PublisherReport implements Action {
 
+	public static final String PUBLISHER_REPORT = "publisher_report";
+
 	@Override
 	public boolean execute() {
 
@@ -19,23 +21,24 @@ public class PublisherReport implements Action {
 					"SELECT %s FROM %s;",
 					Publisher.NAME, Publisher.TABLE
 			);
-			String publisher = null;
+			
+			String publisher_name = null;
 
 			ResultSet publishers = Database.executeQuery(sql);
-			if (publishers != null) {
+			if (publishers != null && publishers.next()) {
 				ResultSetMetaData metaData = publishers.getMetaData();
-				publisher = (String) Menu.promptForValues(metaData).get(Publisher.NAME);
+				publisher_name = (String) Menu.promptForValues(metaData).get(Publisher.NAME);
 
 			}
 
-			if (publisher != null) {
+			if (publisher_name != null) {
 				sql = String.format(
-						"SELECT * FROM pub_report('%s');",
-						publisher
+						"SELECT * FROM %s ('%s');",
+						PUBLISHER_REPORT, publisher_name
 				);
 				ResultSet report = Database.executeQuery(sql);
-				if (report.next()) {
-					Report.showResultSet(String.format("Publisher Report: %s", publisher), report);
+				if (report != null && report.next()) {
+					Report.showResultSet(String.format("Publisher Report: %s", publisher_name), report);
 					return true;
 				} else {
 					System.out.println("Publisher does not exist.");

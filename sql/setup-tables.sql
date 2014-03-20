@@ -110,14 +110,33 @@ CREATE TABLE ArchivedOrderline
 	PRIMARY KEY (ShopOrderID, BookID)
 );
 
+-- Create view for category report which.
+DROP VIEW IF EXISTS category_report CASCADE;
+CREATE VIEW category_report AS
+	SELECT
+		category.name AS category_name,
+		ROUND(AVG(book.price),2) AS average_price,
+		COUNT(category.categoryid) AS number_of_books
+	FROM (book NATURAL JOIN category)
+	GROUP BY category.name
+	ORDER BY number_of_books DESC;
+
+-- Create view for category report summary line:
+DROP VIEW IF EXISTS category_report_summary_line CASCADE;
+CREATE VIEW category_report_summary_line AS
+	SELECT
+		SUM(average_price) AS total_average_price,
+		SUM(number_of_books) AS total_books
+	FROM category_report;
+
 -- Function for generating Publisher Report Data:
-DROP FUNCTION IF EXISTS pub_report (pub_name VARCHAR(50)) CASCADE;
-CREATE FUNCTION pub_report (pub_name VARCHAR(50))
+DROP FUNCTION IF EXISTS publisher_report (publisher_name VARCHAR(50)) CASCADE;
+CREATE FUNCTION publisher_report (publisher_name VARCHAR(50))
 RETURNS TABLE (
-	orderdate DATE,
-	title VARCHAR(50),
-	totalquantity INTEGER,
-	totalsellingvalue DECIMAL(10,2)
+	order_date DATE,
+	book_title VARCHAR(50),
+	total_quantity INTEGER,
+	total_selling_value DECIMAL(10,2)
 )
 AS $$
 BEGIN
@@ -127,9 +146,9 @@ BEGIN
 		book.title,
 		orderline.quantity,
 		orderline.unitsellingprice
-	-- Find 'publisherid' using 'pub_name' regardless of case.
+	-- Find 'publisherid' using 'publisher_name' regardless of case.
 	FROM
-		(((SELECT publisherid FROM publisher WHERE UPPER(name) = UPPER($1)) AS pub_id
+		(((SELECT publisherid FROM publisher WHERE UPPER(name) = UPPER($1)) AS publisher_id
 		NATURAL JOIN book)
 		NATURAL JOIN shop
 		NATURAL JOIN shoporder
@@ -139,14 +158,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Function for generating Book Order History:
-DROP FUNCTION IF EXISTS book_hist (book_id INTEGER) CASCADE;
-CREATE FUNCTION book_hist (book_id INTEGER)
+-- Function for generating book order history:
+DROP FUNCTION IF EXISTS book_order_history (book_id INTEGER) CASCADE;
+CREATE FUNCTION book_order_history (book_id INTEGER)
 RETURNS TABLE (
-	shopname VARCHAR(50),
-	orderdate DATE,
+	shop_name VARCHAR(50),
+	order_date DATE,
 	quantity INTEGER,
-	unitsellingprice DECIMAL(10,2)
+	unit_selling_price DECIMAL(10,2)
 )
 AS $$
 BEGIN
@@ -165,12 +184,12 @@ WHERE book.bookid = $1;
 END;
 $$ LANGUAGE plpgsql;
 
--- Function for generating Book Order History Summary Line:
-DROP FUNCTION IF EXISTS book_hist_summary (book_id INTEGER) CASCADE;
-CREATE FUNCTION book_hist_summary (book_id INTEGER)
+-- Function for generating book order history summary line:
+DROP FUNCTION IF EXISTS book_order_history_summary (book_id INTEGER) CASCADE;
+CREATE FUNCTION book_order_history_summary (book_id INTEGER)
 RETURNS TABLE (
-	copiesordered BIGINT,
-	totalsellingvalue DECIMAL(10,2)
+	copies_ordered BIGINT,
+	total_selling_value DECIMAL(10,2)
 )
 AS $$
 BEGIN
@@ -186,13 +205,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Function for generating Sales Perfomance Report Data:
-DROP FUNCTION IF EXISTS sales_perm_report (startdate DATE, enddate DATE) CASCADE;
-CREATE FUNCTION sales_perm_report (startdate DATE, enddate DATE)
+-- Function for generating the sales perfomance report:
+DROP FUNCTION IF EXISTS sales_performance_report (start_date DATE, end_date DATE) CASCADE;
+CREATE FUNCTION sales_performance_report (start_date DATE, end_date DATE)
 RETURNS TABLE (
 	name VARCHAR(50),
-	orders BIGINT,
-	value DECIMAL(10,2)
+	number_of_orders BIGINT,
+	order_value DECIMAL(10,2)
 )
 AS $$
 BEGIN
@@ -200,7 +219,7 @@ BEGIN
 	SELECT
 		salesrep.name,
 		COUNT(shoporder.salesrepid),
-		SUM(unitsellingprice) AS total
+		SUM(unitsellingprice * quantity) AS total_selling_price
 	FROM (
 		salesrep
 		NATURAL JOIN shoporder
@@ -208,30 +227,32 @@ BEGIN
 	)
 	WHERE orderdate BETWEEN $1 AND $2
 	GROUP BY salesrep.name
-	ORDER BY total DESC;
+	ORDER BY total_selling_price DESC;
 END;
 $$ LANGUAGE plpgsql;
 
--- Function for discounting Books in a given Category:
-DROP FUNCTION IF EXISTS discount_category (id INTEGER, discount DECIMAL(5,2)) CASCADE;
-CREATE FUNCTION discount_category (id INTEGER, discount DECIMAL(5,2))
+-- Function for discounting books in a given category:
+DROP FUNCTION IF EXISTS discount_category (category_id INTEGER, discount_percentage DECIMAL(5,2)) CASCADE;
+CREATE FUNCTION discount_category (category_id INTEGER, discount_percentage DECIMAL(5,2))
 RETURNS TABLE (
-	id INTEGER,
-	title VARCHAR(50),
-	newprice DECIMAL(10,2)
+	category_id INTEGER,
+	book_title VARCHAR(50),
+	new_price DECIMAL(10,2)
 )
 AS $$
 BEGIN
 	
+	-- Update book prices within specified category.
 	UPDATE	book
-	SET	price = ROUND(book.price * ((100 - $2) / 100), 2)
+	SET		price = ROUND(book.price * ((100 - $2) / 100), 2)
 	WHERE	book.categoryid = $1;
 
 	RETURN	QUERY
 
+	-- Return a table containing the discounted books with their new prices.
 	SELECT	book.bookid,
-		book.title,
-		book.price
+			book.title,
+			book.price
 	FROM	book
 	WHERE	book.categoryid = $1;
 
@@ -242,28 +263,28 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION IF EXISTS end_of_year () CASCADE;
 CREATE FUNCTION end_of_year ()
 RETURNS TABLE (
-	repname VARCHAR(50),
-	totalsales DECIMAL(10,2),
+	name VARCHAR(50),
+	total_sales DECIMAL(10,2),
 	bonus DECIMAL(10,2)
 )
 AS $$
 BEGIN
 
 
-	-- Archive Data
+	-- Archive data into duplicate tables.
 	INSERT INTO archivedshoporder SELECT * FROM shoporder;
 	INSERT INTO archivedorderline SELECT * FROM orderline;
 
-	-- Delete Data
+	-- Delete data from tables.
 	DELETE FROM orderline;
 	DELETE FROM shoporder;
 
 	RETURN	QUERY
 	
-	-- Return Bonus Report
+	-- Return table containing the staff bonuses.
 	SELECT
 		salesrep.name,
-		SUM(archivedorderline.unitsellingprice * archivedorderline.quantity),
+		SUM(archivedorderline.unitsellingprice * archivedorderline.quantity) AS sum_sales,
 		SUM(archivedorderline.unitsellingprice * archivedorderline.quantity) *
 		CASE WHEN SUM(archivedorderline.unitsellingprice * archivedorderline.quantity) BETWEEN 0 AND 1000 THEN 0
 		WHEN SUM(archivedorderline.unitsellingprice * archivedorderline.quantity) BETWEEN 1000 AND 5000 THEN 0.01
@@ -274,7 +295,9 @@ BEGIN
 		archivedshoporder NATURAL JOIN
 		archivedorderline
 	GROUP BY
-		salesrep.name;
+		salesrep.name
+	ORDER BY
+		sum_sales DESC;
 	
 END;
 $$ LANGUAGE plpgsql;

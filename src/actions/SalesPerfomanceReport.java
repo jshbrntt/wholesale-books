@@ -10,6 +10,8 @@ import wholesalebooks.Database;
 
 public class SalesPerfomanceReport implements Action {
 
+	public static final String SALES_PERFORMANCE_REPORT = "sales_performance_report";
+	
 	@Override
 	public boolean execute() {
 
@@ -25,10 +27,9 @@ public class SalesPerfomanceReport implements Action {
 				String startDate = (String) dates.get("start_date");
 				String endDate = (String) dates.get("end_date");
 
-				System.out.println(startDate + " " + endDate);
-
 				// OUTPUT:
-				sql = String.format("SELECT * FROM sales_perm_report ('%s', '%s');", startDate, endDate);
+				sql = String.format("SELECT * FROM %s ('%s', '%s');",
+						SALES_PERFORMANCE_REPORT, startDate, endDate);
 				ResultSet salesReport = Database.executeQuery(sql);
 
 				if (salesReport != null && salesReport.next()) {

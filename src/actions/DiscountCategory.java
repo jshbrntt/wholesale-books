@@ -21,23 +21,7 @@ public class DiscountCategory implements Action {
 
 			// INPUT:
 			while (true) {
-				System.out.println("\npercentage:");
-				scanner = new Scanner(System.in);
-				try {
-					percentage = scanner.nextDouble();
-					System.out.println();
-					if (percentage <= 0 || percentage >= 100.00) {
-						throw new InputMismatchException();
-					} else {
-						break;
-					}
-				} catch (InputMismatchException ex) {
-					System.out.println("Invalid Input:\nMust be a valid non-negative percentage between '0' and '100'.");
-				}
-			}
-
-			while (true) {
-				System.out.println("\ncategoryid:");
+				System.out.println("\ncategory_id:");
 				scanner = new Scanner(System.in);
 				try {
 					
@@ -60,6 +44,22 @@ public class DiscountCategory implements Action {
 
 				} catch (InputMismatchException ex) {
 					System.out.println("No category with that 'categoryid' exists.");
+				}
+			}
+			
+			while (true) {
+				System.out.println("\ndiscount_percentage:");
+				scanner = new Scanner(System.in);
+				try {
+					percentage = scanner.nextDouble();
+					System.out.println();
+					if (percentage <= 0 || percentage >= 100.00) {
+						throw new InputMismatchException();
+					} else {
+						break;
+					}
+				} catch (InputMismatchException ex) {
+					System.out.println("Invalid Input:\nMust be a valid non-negative percentage between '0' and '100'.");
 				}
 			}
 			

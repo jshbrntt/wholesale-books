@@ -11,6 +11,9 @@ import wholesalebooks.Database;
 
 public class BookOrderHistory implements Action {
 
+	public static final String BOOK_ORDER_HISTORY = "book_order_history";
+	public static final String BOOK_ORDER_HISTORY_SUMMARY = "book_order_history_summary";
+	
 	@Override
 	public boolean execute() {
 
@@ -33,8 +36,8 @@ public class BookOrderHistory implements Action {
 
 			if (bookid >= 0) {
 				sql = String.format(
-						"SELECT * FROM book_hist('%d');",
-						bookid
+						"SELECT * FROM %s ('%d');",
+						BOOK_ORDER_HISTORY, bookid
 				);
 				ResultSet report = Database.executeQuery(sql);
 				if (report.next()) {
@@ -45,8 +48,8 @@ public class BookOrderHistory implements Action {
 				}
 				
 				sql = String.format(
-						"SELECT * FROM book_hist_summary('%d');",
-						bookid
+						"SELECT * FROM %s ('%d');",
+						BOOK_ORDER_HISTORY_SUMMARY, bookid
 				);
 				ResultSet summary = Database.executeQuery(sql);
 				if (summary.next()) {
@@ -61,6 +64,8 @@ public class BookOrderHistory implements Action {
 				} else {
 					System.out.println("Book does not exist.");
 				}		
+			} else {
+				System.out.println("'bookid' must be a postive integer.");
 			}
 
 		} catch (SQLException ex) {

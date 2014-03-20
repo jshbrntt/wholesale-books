@@ -44,7 +44,7 @@ public class CreateCategory implements Action {
 						break;
 				}
 			}
-			
+
 			int id = (int) values.get(Category.ID);
 			String name = (String) values.get(Category.NAME);
 			String type = (String) values.get(Category.TYPE);
