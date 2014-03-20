@@ -43,7 +43,7 @@ public class BookOrderHistory implements Action {
 				if (report.next()) {
 					Report.showResultSet(String.format("Book Order History Report: %s", title), report);
 				} else {
-					System.out.println("Book does not exist.");
+					System.out.println("Book does not exist, or has had no orders.");
 					return false;
 				}
 				
@@ -62,7 +62,7 @@ public class BookOrderHistory implements Action {
 					);
 					return true;
 				} else {
-					System.out.println("Book does not exist.");
+					System.out.println("Book does not exist, or has had no orders.");
 				}		
 			} else {
 				System.out.println("'bookid' must be a postive integer.");

@@ -4,8 +4,8 @@ CREATE TABLE Category
 (
 	-- Ensure ID is NOT NULL and UNIQUE using the PRIMARY KEY constraint.
 	CategoryID INTEGER PRIMARY KEY,
-	Name VARCHAR(50),	-- SHOULD I MAKE THIS UNIQUE/DISTINCT?
-	CategoryType VARCHAR(20),
+	Name VARCHAR(50) NOT NULL,	-- SHOULD I MAKE THIS UNIQUE/DISTINCT?
+	CategoryType VARCHAR(20) NOT NULL,
 
 	-- Prevent negative ID numbers.
 	CONSTRAINT chk_CategoryID CHECK (CategoryID >= 0),
@@ -14,54 +14,73 @@ CREATE TABLE Category
 	CONSTRAINT chk_CategoryType CHECK (UPPER(CategoryType) IN ('FICTION', 'NON-FICTION'))
 
 );
+CREATE INDEX index_category_name ON Category(Name);
 
 DROP TABLE IF EXISTS SalesRep CASCADE;
 CREATE TABLE SalesRep 
 (
 	SalesRepID INTEGER PRIMARY KEY,
-	Name VARCHAR(50)
+	Name VARCHAR(50) NOT NULL
 );
+CREATE INDEX index_salesrep_name ON SalesRep(Name);
 
 DROP TABLE IF EXISTS Shop CASCADE;
 CREATE TABLE Shop 
 (
 	ShopID INTEGER PRIMARY KEY,
-	Name VARCHAR(50)
+	Name VARCHAR(50) NOT NULL
 );
+CREATE INDEX index_shop_name ON Shop(Name);
 
 DROP TABLE IF EXISTS Publisher CASCADE;
 CREATE TABLE Publisher 
 (
 	PublisherID INTEGER PRIMARY KEY,
-	Name VARCHAR(50)
+	Name VARCHAR(50) NOT NULL
 );
+CREATE INDEX index_publisher_name ON Publisher(Name);
 
 DROP TABLE IF EXISTS Book CASCADE;
 CREATE TABLE Book 
 (
 	BookID INTEGER PRIMARY KEY,
-	Title VARCHAR(50),
-	Price DECIMAL(10,2),
-	CategoryID INTEGER,
-	PublisherID INTEGER,
+	Title VARCHAR(50) NOT NULL,
+	Price DECIMAL(10,2) NOT NULL,
+	CategoryID INTEGER NOT NULL,
+	PublisherID INTEGER NOT NULL,
 
 	-- Referencing foreign keys in the Category and Publisher tables.
-	FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID) ON DELETE CASCADE,
-	FOREIGN KEY (PublisherID) REFERENCES Publisher(PublisherID) ON DELETE CASCADE
+	FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID) ON DELETE RESTRICT,
+	FOREIGN KEY (PublisherID) REFERENCES Publisher(PublisherID) ON DELETE RESTRICT
 );
+CREATE INDEX index_book_title ON Book(Title);
 
 DROP TABLE IF EXISTS ShopOrder CASCADE;
 CREATE TABLE ShopOrder
 (
 	ShopOrderID INTEGER PRIMARY KEY,
-	OrderDate DATE,
-	ShopID INTEGER,
-	SalesRepID INTEGER,
+	OrderDate DATE NOT NULL,
+	ShopID INTEGER NOT NULL,
+	SalesRepID INTEGER NOT NULL,
 
 	-- Referencing foreign keys in the Shop and SalesRep tables.
 	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID),
 	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID)
 );
+CREATE INDEX index_shoporder_orderdate ON ShopOrder(OrderDate);
+
+DROP FUNCTION IF EXISTS archive_shop_order() CASCADE;
+CREATE FUNCTION archive_shop_order () RETURNS TRIGGER AS $$
+	BEGIN
+		INSERT INTO archivedshoporder SELECT old.*;
+		RETURN old;
+	END
+$$ LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS archive_shop_order_trigger ON shoporder CASCADE;
+CREATE TRIGGER archive_shop_order_trigger AFTER DELETE ON shoporder
+	FOR EACH ROW EXECUTE PROCEDURE archive_shop_order(); 
 
 -- Creating duplicate archive tables for both ShopOrder and Orderline.
 -- These are required for the "end of year" procedure.
@@ -69,43 +88,47 @@ DROP TABLE IF EXISTS ArchivedShopOrder CASCADE;
 CREATE TABLE ArchivedShopOrder
 (
 	ShopOrderID INTEGER PRIMARY KEY,
-	OrderDate DATE,
-	ShopID INTEGER,
-	SalesRepID INTEGER,
+	OrderDate DATE NOT NULL,
+	ShopID INTEGER NOT NULL,
+	SalesRepID INTEGER NOT NULL,
 
 	-- Referencing foreign keys in the Shop and SalesRep tables.
-	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID),
-	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID)
+	FOREIGN KEY (ShopID) REFERENCES Shop(ShopID) ON DELETE RESTRICT,
+	FOREIGN KEY (SalesRepID) REFERENCES SalesRep(SalesRepID) ON DELETE RESTRICT
 );
 
 DROP TABLE IF EXISTS Orderline CASCADE;
 CREATE TABLE Orderline
 (
-	ShopOrderID INTEGER,
-	BookID INTEGER,
-	Quantity INTEGER,
+	ShopOrderID INTEGER NOT NULL,
+	BookID INTEGER NOT NULL,
+	Quantity INTEGER NOT NULL,
 	UnitSellingPrice DECIMAL (10,2),
-
-	-- Referencing foreign keys in the ShopOrder and Book tables.
-	FOREIGN KEY (ShopOrderID) REFERENCES ShopOrder(ShopOrderID),
-	FOREIGN KEY (BookID) REFERENCES Book(BookID),
 
 	-- Creating a composite primary key using the two foreign keys.
 	PRIMARY KEY (ShopOrderID, BookID)
 );
 
+DROP FUNCTION IF EXISTS archive_order_line() CASCADE;
+CREATE FUNCTION archive_order_line () RETURNS TRIGGER AS $$
+	BEGIN
+		INSERT INTO archivedorderline SELECT old.*;
+		RETURN old;
+	END
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS archive_order_line_trigger ON orderline CASCADE;
+CREATE TRIGGER archive_order_line_trigger AFTER DELETE ON orderline
+	FOR EACH ROW EXECUTE PROCEDURE archive_order_line();
+
 DROP TABLE IF EXISTS ArchivedOrderline CASCADE;
 CREATE TABLE ArchivedOrderline
 (
-	ShopOrderID INTEGER,
-	BookID INTEGER,
-	Quantity INTEGER,
-	UnitSellingPrice DECIMAL (10,2),
-
-	-- Referencing foreign keys in the ShopOrder and Book tables.
-	FOREIGN KEY (ShopOrderID) REFERENCES ArchivedShopOrder(ShopOrderID),
-	FOREIGN KEY (BookID) REFERENCES Book(BookID),
-
+	ShopOrderID INTEGER NOT NULL,
+	BookID INTEGER NOT NULL,
+	Quantity INTEGER NOT NULL,
+	UnitSellingPrice DECIMAL (10,2) NOT NULL,
+	
 	-- Creating a composite primary key using the two foreign keys.
 	PRIMARY KEY (ShopOrderID, BookID)
 );
@@ -270,14 +293,9 @@ RETURNS TABLE (
 AS $$
 BEGIN
 
-
-	-- Archive data into duplicate tables.
-	INSERT INTO archivedshoporder SELECT * FROM shoporder;
-	INSERT INTO archivedorderline SELECT * FROM orderline;
-
 	-- Delete data from tables.
-	DELETE FROM orderline;
 	DELETE FROM shoporder;
+	DELETE FROM orderline;
 
 	RETURN	QUERY
 	

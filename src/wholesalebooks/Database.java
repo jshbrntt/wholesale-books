@@ -88,46 +88,6 @@ public class Database {
 			return null;
 		}
 	}
-	
-
-	public static ResultSet integerExists(String tableName, String columnName, int value) {
-		try {
-			return statement.executeQuery(
-					"SELECT * FROM " + tableName
-					+ " WHERE " + columnName + " = " + value + ";"
-			);
-		} catch (SQLException ex) {
-			if (ex.getMessage() != null)
-				System.out.println(ex.getMessage());
-			return null;
-		}
-	}
-
-	public static boolean createCategory(int id, String name, Category type) {
-		try {
-			statement.execute(
-					"INSERT INTO Category VALUES (" + id + ", '" + name + "', '" + type.toString() + "')"
-			);
-			return true;
-		} catch (SQLException ex) {
-			if (ex.getMessage() != null)
-				System.out.println(ex.getMessage());
-			return false;
-		}
-	}
-
-	public static ResultSet stringExists(String tableName, String columnName, String value) {
-		try {
-			return statement.executeQuery(
-					"SELECT * FROM " + tableName
-					+ " WHERE " + columnName + " = '" + value + "';"
-			);
-		} catch (SQLException ex) {
-			if (ex.getMessage() != null)
-				System.out.println(ex.getMessage());
-			return null;
-		}
-	}
 
 	public static void disconnect() {
 
