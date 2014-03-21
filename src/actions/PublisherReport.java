@@ -38,7 +38,7 @@ public class PublisherReport implements Action {
 				);
 				ResultSet report = Database.executeQuery(sql);
 				if (report != null && report.next()) {
-					Report.showResultSet(String.format("Publisher Report: %s", publisher_name), report);
+					Report.printResultSet(report);
 					return true;
 				} else {
 					System.out.println("Publisher does not exist.");

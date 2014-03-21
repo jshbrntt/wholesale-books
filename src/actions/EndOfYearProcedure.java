@@ -19,8 +19,8 @@ public class EndOfYearProcedure implements Action {
 			String sql = String.format("SELECT * FROM %s();", END_OF_YEAR);
 			ResultSet bonusReport = Database.executeQuery(sql);
 			if (bonusReport != null && bonusReport.next()) {
-				Report.showResultSet("End Of Year: Bonus Report", bonusReport);
-				return false;
+				Report.printResultSet(bonusReport);
+				return true;
 			}
 		} catch (SQLException ex) {
 			Logger.getLogger(EndOfYearProcedure.class.getName()).log(Level.SEVERE, null, ex);

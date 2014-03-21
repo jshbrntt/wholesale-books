@@ -71,7 +71,7 @@ public class DiscountCategory implements Action {
 			);
 			
 			if (discounted != null && discounted.next()) {
-				Report.showResultSet("Discounted Books", discounted);
+				Report.printResultSet(discounted);
 			}
 
 		} catch (SQLException ex) {

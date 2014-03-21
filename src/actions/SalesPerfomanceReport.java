@@ -33,13 +33,7 @@ public class SalesPerfomanceReport implements Action {
 				ResultSet salesReport = Database.executeQuery(sql);
 
 				if (salesReport != null && salesReport.next()) {
-					Report.showResultSet(
-							String.format(
-									"Sales Perfomance Report: %s to %s",
-									startDate, endDate
-							),
-							salesReport
-					);
+					Report.printResultSet(salesReport);
 					return true;
 				}
 			}

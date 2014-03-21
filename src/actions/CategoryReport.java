@@ -22,7 +22,7 @@ public class CategoryReport implements Action {
 			String sql = String.format("SELECT * FROM %s;", CATEGORY_REPORT);
 			ResultSet report = Database.executeQuery(sql);
 			if (report != null && report.next()) {
-				Report.showResultSet("Category Report", report);
+				Report.printResultSet(report);
 			}
 
 			// Summary Line:

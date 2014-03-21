@@ -41,7 +41,7 @@ public class BookOrderHistory implements Action {
 				);
 				ResultSet report = Database.executeQuery(sql);
 				if (report.next()) {
-					Report.showResultSet(String.format("Book Order History Report: %s", title), report);
+					Report.printResultSet(report);
 				} else {
 					System.out.println("Book does not exist, or has had no orders.");
 					return false;
