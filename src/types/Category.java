@@ -1,5 +1,10 @@
 package types;
 
+/**
+ * Constant values relating to the category table and a utility for printing them.
+ *
+ * @author Joshua Barnett
+ */
 public class Category {
 
 	public static final String TABLE = "category";

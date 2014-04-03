@@ -9,6 +9,11 @@ import menus.Menu;
 import types.Category;
 import wholesalebooks.Database;
 
+/**
+ * Action 1 of the assignment.
+ *
+ * @author Joshua Barnett
+ */
 public class CreateCategory implements Action {
 
 	@Override
@@ -16,13 +21,15 @@ public class CreateCategory implements Action {
 
 		try {
 
+			// Form a query to obtain the entire category table for meta data.
 			String sql = String.format("SELECT * FROM %s;", Category.TABLE);
 			ResultSet rs = Database.executeQuery(sql);
 			ResultSetMetaData rsmd = rs.getMetaData();
 
-			// Prompt user for values relative to table columns...
+			// Prompt user for values relative to result set meta data.
 			Map<String, Object> values = Menu.promptForValues(rsmd);
 			for (String key : values.keySet()) {
+				// Validate the user's input.
 				switch (key) {
 					case Category.ID:
 						int id = (int) values.get(key);
@@ -49,13 +56,14 @@ public class CreateCategory implements Action {
 			String name = (String) values.get(Category.NAME);
 			String type = (String) values.get(Category.TYPE);
 
-			// Check for overlapping existing entries...
+			// Check for overlapping entries...
 			sql = String.format(
 					"SELECT * FROM %s WHERE %s = %d OR %s = '%s';",
 					Category.TABLE, Category.ID, id, Category.NAME, name
 			);
 			ResultSet overlap = Database.executeQuery(sql);
 
+			// If there are overlapping entries then print the conflicting category.
 			if (overlap.next()) {
 
 				System.out.println("Conflicts with existing category:");
@@ -67,7 +75,7 @@ public class CreateCategory implements Action {
 				return false;
 
 			}
-			// Insert new category:
+			// Insert new category.
 			sql = String.format(
 					"INSERT INTO Category VALUES (%d, '%s', '%s');",
 					id, name, type

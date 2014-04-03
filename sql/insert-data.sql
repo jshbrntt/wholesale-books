@@ -1,314 +1,221 @@
----- Category:
+-- TEST DATA
 
-INSERT INTO Category VALUES (1,  'Romance',      'Fiction'    );
-INSERT INTO Category VALUES (2,  'Young Adult',  'Fiction'    );
-INSERT INTO Category VALUES (3,  'Humor',        'Fiction'    );
-INSERT INTO Category VALUES (4,  'Culture',      'Fiction'    );
-INSERT INTO Category VALUES (5,  'Literature',   'Fiction'    );
-INSERT INTO Category VALUES (6,  'Biography',    'Non-fiction');
-INSERT INTO Category VALUES (7,  'Health',       'Non-fiction');
-INSERT INTO Category VALUES (8,  'Children',     'Fiction'    );
-INSERT INTO Category VALUES (9,  'Mystery',      'Fiction'    );
-INSERT INTO Category VALUES (10, 'Thriller',     'Fiction'    );
-INSERT INTO Category VALUES (11, 'Food & Drink', 'Non-fiction');
+-- EMPTY YOUR TABLES, you will also need to empty the archive tables 
+DELETE FROM orderline;
+DELETE FROM ShopOrder;
+DELETE from SalesRep;
+DELETE FROM Book;
+DELETE FROM Shop;
+DELETE FROM Publisher;
+DELETE FROM Category;
 
----- SalesRep:
 
-INSERT INTO SalesRep VALUES (1,  'Alexandra Gray'   );
-INSERT INTO SalesRep VALUES (2,  'Grace Burton'     );
-INSERT INTO SalesRep VALUES (3,  'Skye Johnston'    );
-INSERT INTO SalesRep VALUES (4,  'Molly Davies'     );
-INSERT INTO SalesRep VALUES (5,  'Harry Carter'     );
-INSERT INTO SalesRep VALUES (6,  'Emma Lawrence'    );
-INSERT INTO SalesRep VALUES (7,  'Benjamin Lynch'   );
-INSERT INTO SalesRep VALUES (8,  'Jasmine Gill'     );
-INSERT INTO SalesRep VALUES (9,  'Kayleigh Nolan'   );
-INSERT INTO SalesRep VALUES (10, 'Jack Potts'       );
-INSERT INTO SalesRep VALUES (11, 'Niamh Houghton'   );
-INSERT INTO SalesRep VALUES (12, 'Anthony Reid'     );
-INSERT INTO SalesRep VALUES (13, 'Aimee Morton'     );
-INSERT INTO SalesRep VALUES (14, 'Josh Ali'         );
-INSERT INTO SalesRep VALUES (15, 'Victoria O''Brien');
-INSERT INTO SalesRep VALUES (16, 'Bethany Newman'   );
-INSERT INTO SalesRep VALUES (17, 'Lily Watts'       );
+-- CATEGORY
 
----- Shop:
+INSERT INTO Category (CategoryID, Name, CategoryType) VALUES (1, 'Computing - General', 'Non-fiction');
+INSERT INTO Category (CategoryID, Name, CategoryType) VALUES (2, 'Computing - Databases', 'Non-fiction');
+INSERT INTO Category (CategoryID, Name, CategoryType) VALUES (3, 'Computing - Programming', 'Non-fiction');
+INSERT INTO Category (CategoryID, Name, CategoryType) VALUES (4, 'Science Fiction', 'fiction');
+INSERT INTO Category (CategoryID, Name, CategoryType) VALUES (5, 'Crime', 'fiction');
+INSERT INTO Category (CategoryID, Name, CategoryType) VALUES (6, 'Fiction - General', 'fiction');
+INSERT INTO Category (CategoryID, Name, CategoryType) VALUES (7, 'Biography', 'Non-fiction');
 
-INSERT INTO Shop VALUES (1, 'Amazon'        );
-INSERT INTO Shop VALUES (2, 'Waterstone''s' );
-INSERT INTO Shop VALUES (3, 'Blackwells'    );
-INSERT INTO Shop VALUES (4, 'W H Smith'     );
-INSERT INTO Shop VALUES (5, 'Foyles'        );
-INSERT INTO Shop VALUES (6, 'Barnes & Noble');
+--PUBLISHER
 
----- Publisher:
+INSERT INTO Publisher (PublisherID, Name) VALUES (1, 'Addison Wesley');
+INSERT INTO Publisher (PublisherID, Name) VALUES (2, 'Thompson');
+INSERT INTO Publisher (PublisherID, Name) VALUES (3, 'Palgrave');
+INSERT INTO Publisher (PublisherID, Name) VALUES (4, 'Microsoft Press');
+INSERT INTO Publisher (PublisherID, Name) VALUES (5, 'Prentice Hall');
+INSERT INTO Publisher (PublisherID, Name) VALUES (6, 'O Reilly');
+INSERT INTO Publisher (PublisherID, Name) VALUES (7, 'Doubleday');
+INSERT INTO Publisher (PublisherID, Name) VALUES (8, 'Oxford');
+INSERT INTO Publisher (PublisherID, Name) VALUES (9, 'Bantam');
+INSERT INTO Publisher (PublisherID, Name) VALUES (10, 'Orion');
+INSERT INTO Publisher (PublisherID, Name) VALUES (11, 'Vintage');
+INSERT INTO Publisher (PublisherID, Name) VALUES (12, 'Picador');
+--SHOP
 
-INSERT INTO Publisher VALUES (1, 'Penguin Book'                  );
-INSERT INTO Publisher VALUES (2, 'Black Swan'                    );
-INSERT INTO Publisher VALUES (3, 'HarperCollins Children''s Book');
-INSERT INTO Publisher VALUES (4, 'Scholastic'                    );
-INSERT INTO Publisher VALUES (5, 'Arrow Book'                    );
-INSERT INTO Publisher VALUES (6, 'Simon & Schuster'              );
-INSERT INTO Publisher VALUES (7, 'Michael Joseph'                );
-INSERT INTO Publisher VALUES (8, 'Sphere'                        );
-INSERT INTO Publisher VALUES (9, 'Headline Book Publishing'      );
+INSERT INTO Shop (ShopID, Name) VALUES (1, 'Waterstones, UEA');
+INSERT INTO Shop (ShopID, Name) VALUES (2, 'Ottakers, Norwich');
+INSERT INTO Shop (ShopID, Name) VALUES (3, 'Waterstones, Norwich');
+INSERT INTO Shop (ShopID, Name) VALUES (4, 'Jarrolds, Norwich');
+--SALES REP
 
----- Book:
+INSERT INTO SalesRep (SalesRepID, Name) VALUES (1, 'John Smith');
+INSERT INTO SalesRep (SalesRepID, Name) VALUES (2, 'Marie Johnson');
+INSERT INTO SalesRep (SalesRepID, Name) VALUES (3, 'Rob Wilson');
+INSERT INTO SalesRep (SalesRepID, Name) VALUES (4, 'Mark Davies');
+INSERT INTO SalesRep (SalesRepID, Name) VALUES (5, 'Sarah Moore');
+--BOOK
 
--- Penguin Book:
-INSERT INTO Book VALUES (1, 'Entwined with You: A Crossfire Novel',      3.50,  1,  1);
-INSERT INTO Book VALUES (2, 'The Fault in Our Stars',                    3.85,  2,  1);
-INSERT INTO Book VALUES (3, 'Oh Dear Silvia',                            3.50,  3,  1);
-INSERT INTO Book VALUES (4, 'The Woman Who Went to Bed for a Year',      3.50,  4,  1);
-INSERT INTO Book VALUES (5, 'The Mystery of Mercy Close',                3.50,  4,  1);
-INSERT INTO Book VALUES (6, 'The Husband''s Secret',                     3.80,  5,  1);
-INSERT INTO Book VALUES (7, 'Autobiography by Morrissey',                3.85,  6,  1);
-INSERT INTO Book VALUES (8, 'Reflected in You',                          3.50,  1,  1);
-INSERT INTO Book VALUES (9, 'Thinking, Fast and Slow',                   6.29,  7,  1);
--- Black Swan:
-INSERT INTO Book VALUES (10, 'The Unlikely Pilgrimage of Harold Fry',    5.59,  5,  2);
-INSERT INTO Book VALUES (11, 'I''ve Got Your Number',                    3.50,  2,  2);
--- HarperCollins Children's Books:
-INSERT INTO Book VALUES (12, 'Demon Dentist',                            5.85,  8,  3);
-INSERT INTO Book VALUES (13, 'Gangsta Granny',                           3.50,  3,  3);
-INSERT INTO Book VALUES (14, 'Billionaire Boy',                          3.50,  8,  3);
-INSERT INTO Book VALUES (15, 'The Boy in the Dress',                     3.50,  3,  3);
-INSERT INTO Book VALUES (16, 'Mr Stink',                                 3.50,  3,  3);
--- Scholastic
-INSERT INTO Book VALUES (17, 'Best Book Day Ever (So Far): Tom Gates',   14.99, 8,  4);
-INSERT INTO Book VALUES (18, 'The Hunger Games: Hunger Games Trilogy',   5.16,  8,  4);
-INSERT INTO Book VALUES (19, 'Catching Fire: Hunger Games Trilogy',      5.40,  8,  4);
-INSERT INTO Book VALUES (20, 'Mockingjay: Hunger Games Trilogy',         3.85,  8,  4);
-INSERT INTO Book VALUES (21, 'Tom Gates Is Absolutely Fantastic',        3.50,  8,  4);
--- Arrow Book
-INSERT INTO Book VALUES (22, 'Criminal',                                 3.50,  9,  5);
-INSERT INTO Book VALUES (23, 'Kill Me If You Can',                       3.85,  10, 5);
-INSERT INTO Book VALUES (24, 'Guilty Wives',                             1.99,  10, 5);
-INSERT INTO Book VALUES (25, 'NYPD Red',                                 3.85,  10, 5);
-INSERT INTO Book VALUES (26, 'Private: No. 1 Suspect',                   3.85,  9,  5);
-INSERT INTO Book VALUES (27, 'Merry Christmas, Alex Cross',              5.59,  2,  5);
-INSERT INTO Book VALUES (28, '11th Hour',                                3.85,  9,  5);
--- Simon & Schuster
-INSERT INTO Book VALUES (29, 'The Kingmaker''s Daughter',                3.50,  5,  6);
-INSERT INTO Book VALUES (30, 'Horrid Henry''s Guide to Perfect Parents', 6.73,  8,  6);
-INSERT INTO Book VALUES (31, 'The Summer House',                         3.85,  1,  6);
-INSERT INTO Book VALUES (32, 'Backlash Plante',                          3.50,  10, 6);
--- Michael Joseph
-INSERT INTO Book VALUES (33, 'Save with Jamie',                          7.00,  11, 7);
-INSERT INTO Book VALUES (34, 'Jamie''s 15-Minute Meals',                 12.00, 11, 7);
-INSERT INTO Book VALUES (35, 'Mrs Brown''s Family Handbook',             9.00,  3,  7);
--- Sphere
-INSERT INTO Book VALUES (36, 'The Casual Vacancy',                       3.85,  2,  8);
-INSERT INTO Book VALUES (37, 'The Little Coffee Shop of Kabul',          3.85,  5,  8);
-INSERT INTO Book VALUES (38, 'Eloise',                                   3.85,  5,  8);
-INSERT INTO Book VALUES (39, 'The Cuckoo''s Calling',                    5.36,  9,  8);
--- Headline Book Publishing
-INSERT INTO Book VALUES (40, 'The Life',                                 3.85,  10, 9);
-INSERT INTO Book VALUES (41, 'Revenge',                                  7.00,  9,  9);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(1, 'ASP.NET Programming', 34.99, 3, 4);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(2, 'C# for Beginners', 19.99, 3, 4);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(3, 'Database Systems', 41.99, 2, 1);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(4, 'Relational Database Principles', 21.99, 2, 1);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(5, 'Database Programming with JDBC and Java', 23.95, 2, 6);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(6, 'Computer Networks and Internets', 29.99, 1, 5);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(7, 'Internet and World Wide Web: How to Program', 29.99, 3, 5);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(8, 'Core Servlets and JavaServer Pages', 34.95, 3, 5);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(9, 'C How To Program', 22.99, 3, 5);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(10, 'C# Essentials', 16.99, 3, 6);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(11, 'Designing & Implementation Databses in SQL Server', 34.99, 2, 4);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(12, 'A Hat Full of Sky', 9.99, 4, 7);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(13, 'The Swords of Night and Day', 17.99, 4, 9);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(14, 'No Second Chance', 6.99, 6, 10);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(15, 'Lost Light', 6.99, 6, 10);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(16, 'Touching the Void', 7.99, 7, 11);
+INSERT INTO Book (BookID, Title, Price, CategoryID, PublisherID) VALUES
+	(17, 'Lucky', 7.99, 7, 12);
+--SHOP ORDERS
 
----- ShopOrder:
+-- WATERSTONES UEA
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) VALUES
+	(1, '2014-01-03', 1, 2);
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) VALUES
+	(2, '2014-02-15', 1, 2);
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) VALUES
+	(3, '2014-03-07', 1, 2);
+-- WATERSTONES NORWICH
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) VALUES
+	(4, '2014-01-04', 3, 2);
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) VALUES
+	(5, '2014-02-18', 3, 2);
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) VALUES
+	(6, '2014-03-09', 3, 2);
+-- JARROLDS NORWICH
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) VALUES
+	(7, '2014-01-29', 4, 4);
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) VALUES
+	(8, '2014-02-25', 4, 4);
+-- OTTAKERS, NORWICH
+INSERT INTO ShopOrder (ShopOrderID, OrderDate, ShopID, SalesRepID) 
+     VALUES (100, '2014-03-10', 2, 5);
 
-INSERT INTO ShopOrder VALUES (1,   '2013-06-13', 5, 8 );
-INSERT INTO ShopOrder VALUES (2,   '2014-11-05', 1, 15);
-INSERT INTO ShopOrder VALUES (3,   '2013-04-26', 2, 9 );
-INSERT INTO ShopOrder VALUES (4,   '2013-11-14', 2, 3 );
-INSERT INTO ShopOrder VALUES (5,   '2014-06-11', 1, 17);
-INSERT INTO ShopOrder VALUES (6,   '2012-12-04', 4, 16);
-INSERT INTO ShopOrder VALUES (7,   '2013-10-06', 1, 6 );
-INSERT INTO ShopOrder VALUES (8,   '2014-04-11', 1, 7 );
-INSERT INTO ShopOrder VALUES (9,   '2014-04-12', 5, 12);
-INSERT INTO ShopOrder VALUES (10,  '2013-06-14', 3, 3 );
-INSERT INTO ShopOrder VALUES (11,  '2013-02-13', 3, 12);
-INSERT INTO ShopOrder VALUES (12,  '2013-05-18', 1, 11);
-INSERT INTO ShopOrder VALUES (13,  '2013-12-01', 3, 11);
-INSERT INTO ShopOrder VALUES (14,  '2014-10-02', 2, 13);
-INSERT INTO ShopOrder VALUES (15,  '2014-01-24', 3, 4 );
-INSERT INTO ShopOrder VALUES (16,  '2013-05-20', 1, 11);
-INSERT INTO ShopOrder VALUES (17,  '2014-06-27', 1, 13);
-INSERT INTO ShopOrder VALUES (18,  '2013-12-14', 4, 15);
-INSERT INTO ShopOrder VALUES (19,  '2013-04-21', 5, 13);
-INSERT INTO ShopOrder VALUES (20,  '2014-03-04', 5, 6 );
-INSERT INTO ShopOrder VALUES (21,  '2013-07-08', 3, 17);
-INSERT INTO ShopOrder VALUES (22,  '2014-08-15', 6, 1 );
-INSERT INTO ShopOrder VALUES (23,  '2014-10-25', 4, 15);
-INSERT INTO ShopOrder VALUES (24,  '2014-07-12', 5, 12);
-INSERT INTO ShopOrder VALUES (25,  '2014-06-13', 5, 13);
-INSERT INTO ShopOrder VALUES (26,  '2014-06-25', 5, 4 );
-INSERT INTO ShopOrder VALUES (27,  '2013-06-04', 1, 10);
-INSERT INTO ShopOrder VALUES (28,  '2014-08-20', 3, 12);
-INSERT INTO ShopOrder VALUES (29,  '2013-01-20', 4, 5 );
-INSERT INTO ShopOrder VALUES (30,  '2013-03-01', 5, 17);
-INSERT INTO ShopOrder VALUES (31,  '2014-07-15', 2, 7 );
-INSERT INTO ShopOrder VALUES (32,  '2013-12-15', 6, 4 );
-INSERT INTO ShopOrder VALUES (33,  '2013-12-09', 2, 14);
-INSERT INTO ShopOrder VALUES (34,  '2013-11-05', 3, 7 );
-INSERT INTO ShopOrder VALUES (35,  '2013-09-18', 5, 15);
-INSERT INTO ShopOrder VALUES (36,  '2012-12-26', 1, 4 );
-INSERT INTO ShopOrder VALUES (37,  '2014-10-02', 6, 7 );
-INSERT INTO ShopOrder VALUES (38,  '2014-09-28', 3, 1 );
-INSERT INTO ShopOrder VALUES (39,  '2012-12-13', 1, 11);
-INSERT INTO ShopOrder VALUES (40,  '2013-10-21', 6, 10);
-INSERT INTO ShopOrder VALUES (41,  '2013-12-14', 4, 12);
-INSERT INTO ShopOrder VALUES (42,  '2014-04-26', 1, 6 );
-INSERT INTO ShopOrder VALUES (43,  '2013-08-20', 3, 10);
-INSERT INTO ShopOrder VALUES (44,  '2013-03-13', 1, 17);
-INSERT INTO ShopOrder VALUES (45,  '2014-07-07', 3, 2 );
-INSERT INTO ShopOrder VALUES (46,  '2013-08-17', 6, 13);
-INSERT INTO ShopOrder VALUES (47,  '2013-09-02', 5, 2 );
-INSERT INTO ShopOrder VALUES (48,  '2012-12-15', 3, 13);
-INSERT INTO ShopOrder VALUES (49,  '2014-09-13', 1, 7 );
-INSERT INTO ShopOrder VALUES (50,  '2013-04-09', 5, 16);
-INSERT INTO ShopOrder VALUES (51,  '2013-10-14', 6, 11);
-INSERT INTO ShopOrder VALUES (52,  '2014-12-11', 6, 2 );
-INSERT INTO ShopOrder VALUES (53,  '2013-10-31', 6, 15);
-INSERT INTO ShopOrder VALUES (54,  '2014-12-22', 1, 17);
-INSERT INTO ShopOrder VALUES (55,  '2014-04-09', 4, 10);
-INSERT INTO ShopOrder VALUES (56,  '2014-03-07', 5, 17);
-INSERT INTO ShopOrder VALUES (57,  '2013-10-22', 6, 10);
-INSERT INTO ShopOrder VALUES (58,  '2014-07-03', 5, 7 );
-INSERT INTO ShopOrder VALUES (59,  '2014-01-03', 6, 12);
-INSERT INTO ShopOrder VALUES (60,  '2014-09-22', 5, 15);
-INSERT INTO ShopOrder VALUES (61,  '2013-06-14', 6, 5 );
-INSERT INTO ShopOrder VALUES (62,  '2014-06-17', 3, 12);
-INSERT INTO ShopOrder VALUES (63,  '2014-01-04', 6, 9 );
-INSERT INTO ShopOrder VALUES (64,  '2013-08-14', 3, 11);
-INSERT INTO ShopOrder VALUES (65,  '2013-12-20', 1, 3 );
-INSERT INTO ShopOrder VALUES (66,  '2013-08-18', 5, 5 );
-INSERT INTO ShopOrder VALUES (67,  '2014-02-05', 1, 12);
-INSERT INTO ShopOrder VALUES (68,  '2013-02-19', 5, 16);
-INSERT INTO ShopOrder VALUES (69,  '2014-04-27', 1, 17);
-INSERT INTO ShopOrder VALUES (70,  '2013-07-24', 5, 2 );
-INSERT INTO ShopOrder VALUES (71,  '2014-05-03', 1, 11);
-INSERT INTO ShopOrder VALUES (72,  '2014-12-18', 1, 9 );
-INSERT INTO ShopOrder VALUES (73,  '2014-04-08', 1, 7 );
-INSERT INTO ShopOrder VALUES (74,  '2013-08-22', 4, 15);
-INSERT INTO ShopOrder VALUES (75,  '2014-02-21', 4, 5 );
-INSERT INTO ShopOrder VALUES (76,  '2014-04-11', 2, 2 );
-INSERT INTO ShopOrder VALUES (77,  '2014-07-19', 4, 1 );
-INSERT INTO ShopOrder VALUES (78,  '2013-02-04', 3, 7 );
-INSERT INTO ShopOrder VALUES (79,  '2014-05-06', 6, 5 );
-INSERT INTO ShopOrder VALUES (80,  '2013-05-14', 4, 10);
-INSERT INTO ShopOrder VALUES (81,  '2013-09-12', 4, 4 );
-INSERT INTO ShopOrder VALUES (82,  '2014-12-02', 4, 12);
-INSERT INTO ShopOrder VALUES (83,  '2013-03-21', 1, 14);
-INSERT INTO ShopOrder VALUES (84,  '2014-04-06', 6, 8 );
-INSERT INTO ShopOrder VALUES (85,  '2014-12-22', 1, 11);
-INSERT INTO ShopOrder VALUES (86,  '2013-03-10', 4, 1 );
-INSERT INTO ShopOrder VALUES (87,  '2014-11-25', 3, 14);
-INSERT INTO ShopOrder VALUES (88,  '2014-09-30', 3, 13);
-INSERT INTO ShopOrder VALUES (89,  '2014-11-28', 6, 5 );
-INSERT INTO ShopOrder VALUES (90,  '2013-08-26', 4, 11);
-INSERT INTO ShopOrder VALUES (91,  '2014-11-11', 3, 14);
-INSERT INTO ShopOrder VALUES (92,  '2014-11-30', 6, 9 );
-INSERT INTO ShopOrder VALUES (93,  '2012-12-26', 6, 6 );
-INSERT INTO ShopOrder VALUES (94,  '2014-03-20', 2, 14);
-INSERT INTO ShopOrder VALUES (95,  '2013-05-08', 5, 8 );
-INSERT INTO ShopOrder VALUES (96,  '2014-02-03', 5, 13);
-INSERT INTO ShopOrder VALUES (97,  '2014-07-31', 5, 2 );
-INSERT INTO ShopOrder VALUES (98,  '2014-12-03', 3, 16);
-INSERT INTO ShopOrder VALUES (99,  '2013-07-27', 2, 1 );
-INSERT INTO ShopOrder VALUES (100, '2014-06-28', 3, 16);
+--ORDERLINES
 
----- Orderline:
+--ORDER 1 (Waterstones UEA, Marie Johnson)
+-- Database Systems
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (1, 3, 20, 38.99);	
+-- DB Prog with JDBC
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (1, 5, 10, 21.95);	
+-- SQL Server
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (1, 11, 3, 34.99);	
+-- Rel DB Princ (21.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (1, 4, 15, 19.99);	
 
--- What is unit selling price, is this correct?
-INSERT INTO Orderline VALUES (37 ,14 ,550 ,2.10);
-INSERT INTO Orderline VALUES (59 ,32 ,470 ,2.10);
-INSERT INTO Orderline VALUES (39 ,28 ,420 ,2.31);
-INSERT INTO Orderline VALUES (24 ,23 ,220 ,2.31);
-INSERT INTO Orderline VALUES (11 ,21 ,90  ,2.10);
-INSERT INTO Orderline VALUES (38 ,3  ,140 ,2.10);
-INSERT INTO Orderline VALUES (9  ,3  ,390 ,2.10);
-INSERT INTO Orderline VALUES (29 ,17 ,70  ,8.99);
-INSERT INTO Orderline VALUES (13 ,5  ,230 ,2.10);
-INSERT INTO Orderline VALUES (49 ,40 ,510 ,2.31);
-INSERT INTO Orderline VALUES (33 ,8  ,90  ,2.10);
-INSERT INTO Orderline VALUES (72 ,4  ,150 ,2.10);
-INSERT INTO Orderline VALUES (42 ,1  ,460 ,2.10);
-INSERT INTO Orderline VALUES (48 ,21 ,380 ,2.10);
-INSERT INTO Orderline VALUES (8  ,1  ,340 ,2.10);
-INSERT INTO Orderline VALUES (93 ,25 ,180 ,2.31);
-INSERT INTO Orderline VALUES (20 ,13 ,520 ,2.10);
-INSERT INTO Orderline VALUES (92 ,29 ,220 ,2.10);
-INSERT INTO Orderline VALUES (93 ,29 ,450 ,2.10);
-INSERT INTO Orderline VALUES (48 ,33 ,220 ,4.20);
-INSERT INTO Orderline VALUES (99 ,14 ,90  ,2.10);
-INSERT INTO Orderline VALUES (26 ,14 ,510 ,2.10);
-INSERT INTO Orderline VALUES (43 ,27 ,170 ,3.35);
-INSERT INTO Orderline VALUES (21 ,30 ,180 ,4.04);
-INSERT INTO Orderline VALUES (41 ,33 ,70  ,4.20);
-INSERT INTO Orderline VALUES (90 ,7  ,350 ,2.31);
-INSERT INTO Orderline VALUES (17 ,30 ,100 ,4.04);
-INSERT INTO Orderline VALUES (27 ,26 ,180 ,2.31);
-INSERT INTO Orderline VALUES (60 ,16 ,430 ,2.10);
-INSERT INTO Orderline VALUES (10 ,9  ,20  ,3.77);
-INSERT INTO Orderline VALUES (30 ,33 ,240 ,4.20);
-INSERT INTO Orderline VALUES (42 ,32 ,30  ,2.10);
-INSERT INTO Orderline VALUES (60 ,39 ,50  ,3.22);
-INSERT INTO Orderline VALUES (58 ,36 ,90  ,2.31);
-INSERT INTO Orderline VALUES (20 ,12 ,0   ,3.51);
-INSERT INTO Orderline VALUES (10 ,20 ,470 ,2.31);
-INSERT INTO Orderline VALUES (99 ,33 ,90  ,4.20);
-INSERT INTO Orderline VALUES (43 ,34 ,30  ,7.20);
-INSERT INTO Orderline VALUES (78 ,25 ,240 ,2.31);
-INSERT INTO Orderline VALUES (35 ,18 ,360 ,3.10);
-INSERT INTO Orderline VALUES (10 ,38 ,310 ,2.31);
-INSERT INTO Orderline VALUES (25 ,4  ,10   ,2.10);
-INSERT INTO Orderline VALUES (57 ,1  ,250 ,2.10);
-INSERT INTO Orderline VALUES (95 ,26 ,250 ,2.31);
-INSERT INTO Orderline VALUES (33 ,6  ,270 ,2.28);
-INSERT INTO Orderline VALUES (9  ,10 ,300 ,3.35);
-INSERT INTO Orderline VALUES (90 ,31 ,10   ,2.31);
-INSERT INTO Orderline VALUES (82 ,20 ,50  ,2.31);
-INSERT INTO Orderline VALUES (31 ,10 ,280 ,3.35);
-INSERT INTO Orderline VALUES (2  ,40 ,110 ,2.31);
-INSERT INTO Orderline VALUES (98 ,8  ,400 ,2.10);
-INSERT INTO Orderline VALUES (17 ,18 ,20  ,3.10);
-INSERT INTO Orderline VALUES (51 ,10 ,30  ,3.35);
-INSERT INTO Orderline VALUES (35 ,11 ,70  ,2.10);
-INSERT INTO Orderline VALUES (66 ,24 ,730 ,1.19);
-INSERT INTO Orderline VALUES (29 ,39 ,270 ,3.22);
-INSERT INTO Orderline VALUES (10 ,28 ,260 ,2.31);
-INSERT INTO Orderline VALUES (41 ,1  ,460 ,2.10);
-INSERT INTO Orderline VALUES (31 ,11 ,160 ,2.10);
-INSERT INTO Orderline VALUES (28 ,14 ,370 ,2.10);
-INSERT INTO Orderline VALUES (6  ,3  ,270 ,2.10);
-INSERT INTO Orderline VALUES (10 ,23 ,190 ,2.31);
-INSERT INTO Orderline VALUES (26 ,36 ,470 ,2.31);
-INSERT INTO Orderline VALUES (14 ,32 ,90  ,2.10);
-INSERT INTO Orderline VALUES (48 ,9  ,90  ,3.77);
-INSERT INTO Orderline VALUES (43 ,5  ,320 ,2.10);
-INSERT INTO Orderline VALUES (73 ,15 ,140 ,2.10);
-INSERT INTO Orderline VALUES (78 ,33 ,260 ,4.20);
-INSERT INTO Orderline VALUES (77 ,17 ,50  ,8.99);
-INSERT INTO Orderline VALUES (51 ,3  ,30  ,2.10);
-INSERT INTO Orderline VALUES (6  ,5  ,320 ,2.10);
-INSERT INTO Orderline VALUES (67 ,4  ,160 ,2.10);
-INSERT INTO Orderline VALUES (38 ,18 ,370 ,3.10);
-INSERT INTO Orderline VALUES (93 ,11 ,20  ,2.10);
-INSERT INTO Orderline VALUES (94 ,34 ,90  ,7.20);
-INSERT INTO Orderline VALUES (62 ,32 ,170 ,2.10);
-INSERT INTO Orderline VALUES (54 ,32 ,400 ,2.10);
-INSERT INTO Orderline VALUES (47 ,8  ,50  ,2.10);
-INSERT INTO Orderline VALUES (89 ,39 ,100 ,3.22);
-INSERT INTO Orderline VALUES (9  ,21 ,40  ,2.10);
-INSERT INTO Orderline VALUES (46 ,18 ,50  ,3.10);
-INSERT INTO Orderline VALUES (30 ,6  ,90  ,2.28);
-INSERT INTO Orderline VALUES (82 ,4  ,250 ,2.10);
-INSERT INTO Orderline VALUES (30 ,3  ,390 ,2.10);
-INSERT INTO Orderline VALUES (6  ,4  ,550 ,2.10);
-INSERT INTO Orderline VALUES (85 ,21 ,200 ,2.10);
-INSERT INTO Orderline VALUES (80 ,30 ,170 ,4.04);
-INSERT INTO Orderline VALUES (87 ,35 ,60  ,5.40);
-INSERT INTO Orderline VALUES (29 ,3  ,370 ,2.10);
-INSERT INTO Orderline VALUES (77 ,36 ,200 ,2.31);
-INSERT INTO Orderline VALUES (20 ,30 ,80  ,4.04);
-INSERT INTO Orderline VALUES (50 ,27 ,250 ,3.35);
-INSERT INTO Orderline VALUES (10 ,40 ,50  ,2.31);
-INSERT INTO Orderline VALUES (3  ,29 ,70  ,2.10);
-INSERT INTO Orderline VALUES (28 ,40 ,480 ,2.31);
-INSERT INTO Orderline VALUES (37 ,18 ,240 ,3.10);
-INSERT INTO Orderline VALUES (42 ,10 ,130 ,3.35);
-INSERT INTO Orderline VALUES (90 ,23 ,490 ,2.31);
-INSERT INTO Orderline VALUES (52 ,20 ,270 ,2.31);
-INSERT INTO Orderline VALUES (82 ,35 ,10  ,5.40);
+--ORDER 2 (Waterstones UEA, Marie Johnson)
+-- Database Systems
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (2, 3, 10, 41.99);	
+-- Rel DB Princ  (21.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (2, 4, 5, 21.99);	
+-- Internet and WWW
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (2, 7, 10, 29.99);	
+
+--ORDER 3 (Waterstones UEA, Marie Johnson )
+-- Database Systems
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (3, 3, 5, 41.99);	
+-- Rel DB Princ  (21.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (3, 4, 2, 21.99);	
+-- Internet and WWW
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (3, 7, 20, 25.99);	
+-- Core Servlets
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (3, 8, 10, 32.95);	
+-- C How To
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (3, 9, 3, 22.99);	
+
+--ORDER 4 (Waterstones Norwich, Marie Johnson)
+-- Database Systems
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (4, 3, 5, 41.99);	
+-- DB Prog with JDBC
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (4, 5, 2, 21.95);	
+-- SQL Server
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (4, 11, 1, 34.99);	
+-- Rel DB Princ
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (4, 4, 5, 21.99);	
+-- Hat Full of Sky (9.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (4, 12, 20, 7.99);	
+-- Swords (17.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (4, 13, 4, 17.99);	
+
+--ORDER 5 (Water stones Norwich, Marie Johnson)
+-- Database Systems
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (5, 3, 2, 41.99);	
+-- Rel DB Princ
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (5, 4, 1, 21.99);	
+-- Internet and WWW
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (5, 7, 5, 29.99);	
+-- Hat Full of Sky (9.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (5, 12, 10, 9.99);	
+-- Swords (17.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (5, 13, 2, 17.99);	
+
+--ORDER 6 (Waterstones Norwich, Marie Johnson )
+-- Database Systems
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (6, 3, 2, 41.99);	
+-- Internet and WWW
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (6, 7, 1, 15.99);	
+-- Core Servlets
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (6, 8, 3, 32.95);	
+-- C How To
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (6, 9, 1, 22.99);	
+-- Hat Full of Sky (9.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (6, 12, 10, 9.99);	
+-- Swords (17.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (6, 13, 2, 17.99);	
+
+--ORDER 7 (Jarrolds Norwich, Mark Davies)
+-- ASP.NET (34.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (7, 1, 2, 34.99);	
+-- C# Essentials (16.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (7, 10, 3, 16.99);	
+-- Database Systems
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (7, 3, 2, 41.99);	
+-- Hat Full of Sky (9.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (7, 12, 10, 9.99);	
+-- Swords (17.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (7, 13, 2, 17.99);	
+-- No Second Chance (6.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (7, 14, 10, 5.99);	
+-- Lucky (7.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (7, 17, 8, 7.99);	
+
+--ORDER 8 (Jarrolds Norwich, Mark Davies)
+-- ASP.NET (34.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 1, 1, 34.99);	
+-- C# Essentials (16.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 10, 1, 16.99);	
+-- Database Systems
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 3, 1, 41.99);	
+-- Hat Full of Sky (9.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 12, 5, 9.99);	
+-- Swords (17.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 13, 1, 17.99);	
+-- No Second Chance (6.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 14, 3, 5.99);	
+-- Lost Light (6.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 15, 20, 5.99);	
+-- Touching the Void (7.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 16, 15, 6.99);	
+-- Lucky (7.99)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (8, 17, 3, 7.99);
+
+--ORDER 9 (Ottakers Norwich, Sarah Moore)
+INSERT INTO OrderLine (ShopOrderID, BookID, Quantity, UnitSellingPrice) VALUES (100, 1, 300, 34.99);
+	

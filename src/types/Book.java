@@ -1,5 +1,9 @@
 package types;
 
+/**
+ * Constants relating to the book table.
+ * @author Joshua Barnett
+ */
 public class Book {
 
 	public static final String TABLE = "book";

@@ -6,8 +6,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * A utility class for printing a result set to the command line formatted
+ * neatly.
+ *
+ * @author Joshua Barnett
+ */
 public class Report {
 
+	/**
+	 * Prints the result set's column labels and data.
+	 *
+	 * @param rs The result set you want to print.
+	 */
 	public static void printResultSet(ResultSet rs) {
 
 		try {
@@ -68,7 +79,7 @@ public class Report {
 				}
 				System.out.println("|");
 			}
-			
+
 			// Spacer between next bit of output.
 			System.out.println();
 

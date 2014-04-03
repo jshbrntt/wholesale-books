@@ -13,13 +13,18 @@ import java.util.Arrays;
 import menus.Menu;
 import menus.MenuItem;
 
+/**
+ * The main class for wholesale books client.
+ *
+ * @author Joshua Barnett
+ */
 public class WholesaleBooks {
 
 	public final static String setupTablesSQL = "sql/setup-tables.sql";
 	public final static String insertDataSQL = "sql/insert-data.sql";
 
 	public static Menu menu = new Menu(
-			
+			// Setup the command prompt menu and it's associated actions.
 			"Wholesale Books",
 			Arrays.asList(
 					new MenuItem("Setup Tables", new SetupTables()),
@@ -31,12 +36,12 @@ public class WholesaleBooks {
 					new MenuItem("Sales Perfomance Report", new SalesPerfomanceReport()),
 					new MenuItem("Discount Category", new DiscountCategory()),
 					new MenuItem("End Of Year Procedure", new EndOfYearProcedure())
-					
 			)
 	);
 
 	public static void main(String[] args) {
 
+		// Connect to the database if successful the prompt the menu until the program is exited.
 		if (Database.connect()) {
 			while (true) {
 				menu.prompt();
